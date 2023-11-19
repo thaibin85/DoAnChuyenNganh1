@@ -23,7 +23,7 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             _client = new HttpClient();
             _client.BaseAddress = BaseAddress;
         }
-        List<Product> GetProduct()
+        List<Product> GetProducts()
         {
             List<Product> productsList = new List<Product>();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/products").Result;
@@ -33,6 +33,17 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
                 productsList = JsonConvert.DeserializeObject<List<Product>>(data);
             }
             return productsList;
+        }
+        Product GetProduct(int id)
+        {
+            Product product = new Product();
+            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/products/" + id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                product = JsonConvert.DeserializeObject<Product>(data);
+            }
+            return product;
         }
 
         List<ProductCategory> GetProductCategories()
@@ -46,10 +57,17 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             }
             return productCategoriesList;
         }
+        HttpResponseMessage PutProduct(Product model)
+        {
+            string data = JsonConvert.SerializeObject(model);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = _client.PutAsync(_client.BaseAddress + "/Products/", content).Result;
+            return response;
+        }
         // GET: Admin/Products
         public ActionResult Index(int? page)
         {
-            IEnumerable<Product> items = GetProduct().OrderByDescending(c=>c.Id);
+            IEnumerable<Product> items = GetProducts().OrderByDescending(c=>c.Id);
             var pageSize = 10;
             if (page == null)
             {
@@ -120,13 +138,7 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         public ActionResult Edit(int id)
         {
             ViewBag.ProductCategory = new SelectList(GetProductCategories().ToList(), "Id", "Title");
-            Product product = new Product();
-            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/Products/" + id).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                string data = response.Content.ReadAsStringAsync().Result;
-                product = JsonConvert.DeserializeObject<Product>(data);
-            }
+            Product product = GetProduct(id);   
 
             return View(product);
         }
@@ -139,10 +151,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
             {
                 model.ModifiedDate = DateTime.Now;
                 model.Alias = WebBanHangOnline.Models.Common.Filter.FilterChar(model.Title);
-                string data = JsonConvert.SerializeObject(model);
-                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = _client.PutAsync(_client.BaseAddress + "/Products/PutProduct", content).Result;
-                return RedirectToAction("Index");
+                var response = PutProduct(model);
+                if(response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
             }
             return View(model);
         }
@@ -150,7 +163,7 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            var item = db.Products.Find(id);
+            var item = GetProduct(id);
             if (item != null)
             {
                 var checkImg = item.ProductImage.Where(x => x.ProductId == item.Id);
@@ -158,13 +171,16 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
                 {
                     foreach(var img in checkImg)
                     {
+                        db.ProductImages.Attach(img);
                         db.ProductImages.Remove(img);
                         db.SaveChanges();
                     }
                 }
-                db.Products.Remove(item);
-                db.SaveChanges();
-                return Json(new { success = true });
+                HttpResponseMessage response = _client.DeleteAsync(_client.BaseAddress + "/Products/" + id).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new { success = true });
+                }
             }
 
             return Json(new { success = false });
@@ -173,12 +189,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult IsActive(int id)
         {
-            var item = db.Products.Find(id);
+            var item = GetProduct(id);
             if (item != null)
             {
                 item.IsActive = !item.IsActive;
-                db.Entry(item).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
+                PutProduct(item);
                 return Json(new { success = true, isAcive = item.IsActive });
             }
 
@@ -187,12 +202,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult IsHome(int id)
         {
-            var item = db.Products.Find(id);
+            var item = GetProduct(id);
             if (item != null)
             {
                 item.IsHome = !item.IsHome;
-                db.Entry(item).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
+                PutProduct(item);
                 return Json(new { success = true, IsHome = item.IsHome });
             }
 
@@ -202,12 +216,11 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult IsSale(int id)
         {
-            var item = db.Products.Find(id);
+            var item = GetProduct(id);
             if (item != null)
             {
                 item.IsSale = !item.IsSale;
-                db.Entry(item).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
+                PutProduct(item);
                 return Json(new { success = true, IsSale = item.IsSale });
             }
 

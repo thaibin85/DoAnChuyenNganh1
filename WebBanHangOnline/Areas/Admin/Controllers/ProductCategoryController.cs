@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 using WebBanHangOnline.Models;
@@ -11,11 +13,25 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
     public class ProductCategoryController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        Uri BaseAddress = new Uri("https://localhost:44375/api");
+        private readonly HttpClient _client;
+        public ProductCategoryController()
+        {
+            _client = new HttpClient();
+            _client.BaseAddress = BaseAddress;
+        }
         // GET: Admin/ProductCategory
         public ActionResult Index()
         {
-            var items = db.ProductCategories;
-            return View(items);
+            //var items = db.ProductCategories;
+            List<ProductCategory> productCategoriesList = new List<ProductCategory>();
+            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/productcategories").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                productCategoriesList = JsonConvert.DeserializeObject<List<ProductCategory>>(data);
+            }
+            return View(productCategoriesList);
         }
 
         public ActionResult Add()
@@ -40,8 +56,15 @@ namespace WebBanHangOnline.Areas.Admin.Controllers
         }
         public ActionResult Edit(int id)
         {
-            var item = db.ProductCategories.Find(id);
-            return View(item);
+            //var item = db.ProductCategories.Find(id);
+            ProductCategory productCategory = new ProductCategory();
+            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/productcategories/" + id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                productCategory = JsonConvert.DeserializeObject<ProductCategory>(data);
+            }
+            return View(productCategory);
         }
 
         [HttpPost]

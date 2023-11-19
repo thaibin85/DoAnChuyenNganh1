@@ -27,7 +27,7 @@ namespace WebBanHangOnline.ApiControllers
         [ResponseType(typeof(Product))]
         public IHttpActionResult GetProduct(int id)
         {
-            Product product = db.Products.FirstOrDefault(C=>C.Id == id);
+            Product product = db.Products.Find(id);
             if (product == null)
             {
                 return NotFound();
@@ -38,35 +38,16 @@ namespace WebBanHangOnline.ApiControllers
 
         // PUT: api/Products/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutProduct(int id, Product product)
+        public IHttpActionResult PutProduct(Product product)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
-
             db.Entry(product).State = EntityState.Modified;
 
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            db.SaveChanges();
 
             return StatusCode(HttpStatusCode.NoContent);
         }
