@@ -1,0 +1,87 @@
+﻿@model List<WebBanHangOnline.ApiControllers.StatisticalController.MonthlyRevenue>
+@{
+    ViewBag.Title = "Month";
+}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="col-md-3">
+    <label for="monthSelector" class="form-label">Select Month:</label>
+    <select id="monthSelector" class="form-select">
+        @{
+            for (int month = 1; month <= 12; month++)
+            {
+                <option value="@month">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month)</option>
+            }
+        }
+    </select>
+</div>
+
+@section scripts{
+
+    <script>
+    $(document).ready(function () {
+        function loadData() {
+            var selectedYear = $('#yearSelector').val();
+            var selectedMonth = $('#monthSelector').val();
+            $.ajax({
+                url: '@Url.Action("Month", "Statistical")',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    selectedYear: selectedYear,
+                },
+                success: function (data) {
+                    if (data != null) {
+                        // Convert data to match Chart.js format
+                        var chartData = {
+                            labels: data.map(item => item.Month),
+                            datasets: [
+                                {
+                                    label: 'Doanh Thu',
+                                    data: data.map(item => item.TotalRevenue),
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Lợi Nhuận',
+                                    data: data.map(item => item.TotalRevenue),
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    borderWidth: 1
+                                }
+                            ]
+                        };
+
+                        // Draw chart using Chart.js
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: chartData,
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        console.error('Error: Data is null');
+                    }
+                },
+                error: function (error) {
+                    console.error('Error fetching data: ', error);
+                }
+            });
+        }
+
+        $('#yearSelector, #monthSelector').on('change', function () {
+            loadData();
+        });
+
+        // Load data when the page is loaded
+        loadData();
+    });
+    </script>
+
+}

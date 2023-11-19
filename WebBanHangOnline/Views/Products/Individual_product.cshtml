@@ -1,0 +1,292 @@
+﻿@model IEnumerable<WebBanHangOnline.Models.EF.Product>
+@using WebBanHangOnline.Common
+
+<style>
+    .section_title {
+        color: blue;
+    }
+
+    .img-QC {
+        max-width: 100%;
+        vertical-align: middle;
+        border: 0;
+    }
+</style>
+@if (Model != null && Model.Any())
+{
+    <div class="container">
+        <div class="img-QC">
+            <img src="~/Content/assets/images/QCTomHum.jpg" />
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <div class="section_title ">
+                    <h2 style="font-family:Calibri;font-weight:500">Tôm</h2>
+                </div>
+                <div class="text-right">
+                    @Html.ActionLink("Xem Tất cả -->>", "Index", "Products")
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="">
+                    <div class="owl-carousel owl-theme product_slider">
+                        @foreach (var item in Model)
+                        {
+                            if (item.ProductCategoryId == 1)
+                            {
+                                <div class="owl-item product_slider_item" style="padding-bottom:100px">
+                                    <div class="product-item @item.ProductCategory.Alias">
+                                        <div class="product discount product_filter">
+                                            <div class="product_image">
+                                                <img src="@item.Image" alt="@item.Title">
+                                            </div>
+                                            <div class="favorite favorite_left"></div>
+                                            <div class="product_info">
+                                                <h6 class="product_name"><a href="/chi-tiet/@item.Alias-p@(item.Id)">@item.Title</a></h6>
+                                                @if (item.PriceSale > 0)
+                                                {
+                                                    <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.PriceSale, 0)<span>@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</span></div>
+
+                                                }
+                                                else
+                                                {
+                                                    <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="red_button add_to_cart_button"><a href="#" class="btnAddToCart" data-id="@item.Id">add to cart</a></div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="img-QC">
+            <img src="~/Content/assets/images/QCCABIEN (1).jpg" />
+        </div>
+    </div>
+    <div class="best_sellers">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <div class="section_title ">
+                        <h2 style="font-family:Calibri;font-weight:500">Cá</h2>
+                    </div>
+                    <div class="text-right">
+                        @Html.ActionLink("Xem Tất cả -->>", "Index", "Products")
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="">
+                        <div class="owl-carousel owl-theme product_slider">
+                            @foreach (var item in Model)
+                            {
+                                if (item.ProductCategoryId == 2)
+                                {
+                                    <div class="owl-item product_slider_item" style="padding-bottom:100px">
+                                        <div class="product-item @item.ProductCategory.Alias">
+                                            <div class="product discount product_filter">
+                                                <div class="product_image">
+                                                    <img src="@item.Image" alt="@item.Title">
+                                                </div>
+                                                <div class="favorite favorite_left"></div>
+                                                <div class="product_info">
+                                                    <h6 class="product_name"><a href="/chi-tiet/@item.Alias-p@(item.Id)">@item.Title</a></h6>
+                                                    @if (item.PriceSale > 0)
+                                                    {
+                                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.PriceSale, 0)<span>@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</span></div>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="red_button add_to_cart_button"><a href="#" class="btnAddToCart" data-id="@item.Id">add to cart</a></div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="best_sellers">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <div class="section_title ">
+                        <h2 style="font-family:Calibri;font-weight:500">Cua - Ghẹ</h2>
+                    </div>
+                    <div class="text-right">
+                        @Html.ActionLink("Xem Tất cả -->>", "Index", "Products")
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="product_slider_container">
+                        <div class="owl-carousel owl-theme product_slider">
+                            @foreach (var item in Model)
+                            {
+                                if (item.ProductCategoryId == 3)
+                                {
+                                    <div class="owl-item product_slider_item" style="padding-bottom:100px">
+                                        <div class="product-item @item.ProductCategory.Alias">
+                                            <div class="product discount product_filter">
+                                                <div class="product_image">
+                                                    <img src="@item.Image" alt="@item.Title">
+                                                </div>
+                                                <div class="favorite favorite_left"></div>
+                                                <div class="product_info">
+                                                    <h6 class="product_name"><a href="/chi-tiet/@item.Alias-p@(item.Id)">@item.Title</a></h6>
+                                                    @if (item.PriceSale > 0)
+                                                    {
+                                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.PriceSale, 0)<span>@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</span></div>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="red_button add_to_cart_button"><a href="#" class="btnAddToCart" data-id="@item.Id">add to cart</a></div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="best_sellers">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <div class="section_title ">
+                        <h2 style="font-family:Calibri;font-weight:500">Bạch Tuột - Mực </h2>
+                    </div>
+                    <div class="text-right">
+                        @Html.ActionLink("Xem Tất cả -->>", "Index", "Products")
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="product_slider_container">
+                        <div class="owl-carousel owl-theme product_slider">
+                            @foreach (var item in Model)
+                            {
+                                if (item.ProductCategoryId == 4)
+                                {
+                                    <div class="owl-item product_slider_item" style="padding-bottom:100px">
+                                        <div class="product-item @item.ProductCategory.Alias">
+                                            <div class="product discount product_filter">
+                                                <div class="product_image">
+                                                    <img src="@item.Image" alt="@item.Title">
+                                                </div>
+                                                <div class="favorite favorite_left"></div>
+                                                <div class="product_info">
+                                                    <h6 class="product_name"><a href="/chi-tiet/@item.Alias-p@(item.Id)">@item.Title</a></h6>
+                                                    @if (item.PriceSale > 0)
+                                                    {
+                                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.PriceSale, 0)<span>@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</span></div>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="red_button add_to_cart_button"><a href="#" class="btnAddToCart" data-id="@item.Id">add to cart</a></div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="img-QC">
+            <img src="~/Content/assets/images/QCHAISAN2 (1).png" />
+        </div>
+    </div>
+    <div class="best_sellers">
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <div class="section_title ">
+                        <h2 style="font-family:Calibri;font-weight:500">Ốc - Hàu</h2>
+                    </div>
+                    <div class="text-right">
+                        @Html.ActionLink("Xem Tất cả -->>", "Index", "Products")
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="product_slider_container">
+                        <div class="owl-carousel owl-theme product_slider">
+                            @foreach (var item in Model)
+                            {
+                                if (item.ProductCategoryId == 5)
+                                {
+                                    <div class="owl-item product_slider_item" style="padding-bottom:100px">
+                                        <div class="product-item @item.ProductCategory.Alias">
+                                            <div class="product discount product_filter">
+                                                <div class="product_image">
+                                                    <img src="@item.Image" alt="@item.Title">
+                                                </div>
+                                                <div class="favorite favorite_left"></div>
+                                                <div class="product_info">
+                                                    <h6 class="product_name"><a href="/chi-tiet/@item.Alias-p@(item.Id)">@item.Title</a></h6>
+                                                    @if (item.PriceSale > 0)
+                                                    {
+                                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.PriceSale, 0)<span>@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</span></div>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="product_price">@WebBanHangOnline.Common.Common.FormatNumber(item.Price, 0)</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="red_button add_to_cart_button"><a href="#" class="btnAddToCart" data-id="@item.Id">add to cart</a></div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
